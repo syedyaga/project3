@@ -12,6 +12,9 @@
             <input type="text" placeholder="enter city name" spellcheck="false">
            <button><img src="images/search.png"></button>    
         </div>
+        <div class="error">
+            <p>Invalid city name</p>
+        </div>
         <div class="weather">
             <img src="images/rain.png" class="weather-icon">
           <h1 class="temp">22°C</h1>
@@ -38,5 +41,71 @@
           </div>
         </div>
     </div>
+
+    <script>
+// Define a constant to store the OpenWeatherMap API key
+const apiKey = "88553ee1a38023789894c1d9f65ad523";
+
+// Define a constant to store the API URL for Bangalore weather in metric units (note the typo in the city name "bangluru")
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=";
+
+const searchBox = document.querySelector(".search input");
+const searchBtn = document.querySelector(".search button");
+const weatherIcon = document.querySelector(".weather-icon");
+
+
+// Declare an asynchronous function to check the weather
+async function checkWeather(city) {
+    // Construct the full URL with the API key using a template literal and send the request
+    const response = await fetch(apiUrl + city +`&appid=${apiKey}`);
+
+    // Wait for the response and parse it as JSON
+    var data = await response.json();
+
+    // Log the parsed data to the console for debugging
+    console.log(data);
+
+    // Update the DOM with the weather data
+    // Set the city name
+    document.querySelector(".city").innerHTML = data.name;
+    // Set the temperature
+    document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+    // Set the humidity
+    document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+    // Set the wind speed
+    document.querySelector(".wind").innerHTML = data.wind.speed + "km/hr";
+
+    if(data.weather[0].main == "Clouds") {
+       
+     weatherIcon.src= "images/clouds.png";
+    } else if (data.weather[0].main == "Clear"){
+     
+          weatherIcon.src= "images/clear.png";
+
+    } else if (data.weather[0].main == "Rain"){
+     
+     weatherIcon.src= "images/rain.png";
+
+} else if (data.weather[0].main == "Drizzle"){
+     
+     weatherIcon.src= "images/drizzle.png";
+} else if (data.weather[0].main == "Mist"){
+     
+     weatherIcon.src= "images/mist.png";
+} 
+
+  document.querySelector(".weather").style.display = "block";
+}
+
+
+searchBtn.addEventListener("click", ()=>{
+    checkWeather(searchBox.value);
+})
+    
+// Invoke the checkWeather function to execute the above code
+
+
+       
+    </script>
 </body>
 </html>
